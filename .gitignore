@@ -1,0 +1,36 @@
+# Private docs (local only)
+docs/
+
+# Per-video content: recordings, renders, freebies
+videos/
+
+# Your analytics and hook performance numbers
+analytics/
+hook-bank/performance.json
+
+# Full hook bank stays local; hooks.sample.json is public
+hook-bank/hooks.json
+hook-bank/trends/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Build and dependencies
+node_modules/
+out/
+build/
+.remotion/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+dist/
+
+# Local transcription binaries and models
+.whisper/
+
+# Your default generated voice
+voice.config.json

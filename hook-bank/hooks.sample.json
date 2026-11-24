@@ -1,0 +1,39 @@
+{
+  "niche": "AI and tech explainers for a non-AI audience",
+  "note": "Sample bank. The full bank lives in hooks.json, which is kept local. The pipeline uses hooks.json if it exists, otherwise this file.",
+  "families": [
+    {
+      "id": "how-it-works",
+      "family": "How it actually works",
+      "template": "Here's what really happens when you [everyday AI action]",
+      "examples": ["Here's what really happens when you hit enter on ChatGPT"],
+      "emotion": "curiosity",
+      "fits": ["chatbots", "everyday AI features"],
+      "visual": "Hook text over a frozen UI moment, then zoom into it",
+      "status": "fresh",
+      "lastChecked": "2026-11-24"
+    },
+    {
+      "id": "misconception-bust",
+      "family": "Misconception bust",
+      "template": "You think AI [belief]. It doesn't.",
+      "examples": ["ChatGPT doesn't look up answers. It predicts them."],
+      "emotion": "surprise",
+      "fits": ["how models work", "AI limits"],
+      "visual": "Belief appears, gets struck through, truth slides in",
+      "status": "fresh",
+      "lastChecked": "2026-11-24"
+    },
+    {
+      "id": "analogy-first",
+      "family": "Analogy first",
+      "template": "[AI concept] is basically [everyday thing]",
+      "examples": ["An AI model is basically autocomplete that read the internet"],
+      "emotion": "relief",
+      "fits": ["core concepts", "jargon"],
+      "visual": "Everyday object morphs into the AI concept",
+      "status": "fresh",
+      "lastChecked": "2026-11-24"
+    }
+  ]
+}
