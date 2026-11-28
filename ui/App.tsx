@@ -28,12 +28,13 @@ export const App = () => {
     <div className="shell">
       <aside className="rail">
         <a className="mark" href="#/" aria-label="ai-vid home"><span>av</span></a>
-        {!firstRun && (
-          <nav className="nav" aria-label="Main">
-            <a href="#/" aria-current={page === "home" || page === "reel" ? "page" : undefined}><Film /><span>Reels</span></a>
-            <a href="#/settings" aria-current={page === "settings" ? "page" : undefined}><Gear /><span>Settings</span></a>
-          </nav>
-        )}
+        {/* Always visible; during first-run setup they're dimmed until setup is saved. */}
+        <nav className={`nav${firstRun ? " locked" : ""}`} aria-label="Main">
+          <a href={firstRun ? undefined : "#/"} title={firstRun ? "Finish setup first" : undefined} aria-disabled={firstRun}
+            aria-current={!firstRun && (page === "home" || page === "reel") ? "page" : undefined}><Film /><span>Reels</span></a>
+          <a href={firstRun ? undefined : "#/settings"} title={firstRun ? "Finish setup first" : undefined} aria-disabled={firstRun}
+            aria-current={!firstRun && page === "settings" ? "page" : undefined}><Gear /><span>Settings</span></a>
+        </nav>
         <LiveCircuit />
       </aside>
       <div className="content">
