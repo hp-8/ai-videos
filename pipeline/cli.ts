@@ -14,7 +14,7 @@ import { ScriptOut } from "./1-script/schema";
 import { join } from "node:path";
 import { readJson, ROOT, videoDirs, VIDEOS } from "./paths";
 import { ffmpeg } from "./3-audio/ffmpeg";
-import { FOLLOW_CTA, saveScript, toScriptFile, type ScriptFile } from "./1-script/save";
+import { followCta, saveScript, toScriptFile, type ScriptFile } from "./1-script/save";
 
 const USAGE = `Usage:
   npm run reel -- brief "<one sentence>" [--no-freebie]   print the script brief
@@ -107,7 +107,7 @@ const main = async () => {
     if (!yes) {
       // Fall back to follow CTA. Earlier set-up lines may mention the freebie: review with `show`.
       s.cta = "follow";
-      Object.assign(s.scenes[s.scenes.length - 1], { narration: FOLLOW_CTA, headline: "Follow for more", highlight: "Follow" });
+      Object.assign(s.scenes[s.scenes.length - 1], { narration: followCta(), headline: "Follow for more", highlight: "Follow" });
     }
     saveScript(dir, s);
     return show(dir, s);

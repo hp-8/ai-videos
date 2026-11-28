@@ -1,4 +1,5 @@
 import { mkdirSync, writeFileSync } from "node:fs";
+import { loadSettings } from "../settings";
 import { join } from "node:path";
 import type { ScriptOut } from "./schema";
 
@@ -11,7 +12,7 @@ export type ScriptFile = ScriptOut & {
   freebieStatus: FreebieStatus;
 };
 
-export const FOLLOW_CTA = "Follow for more AI, explained simply.";
+export const followCta = () => loadSettings().followCta;
 
 export const toScriptFile = (idea: string, s: ScriptOut): ScriptFile => ({
   idea,

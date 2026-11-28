@@ -1,14 +1,15 @@
 import type { HookFamily } from "../0-hooks/bank";
+import { loadSettings, type Settings } from "../settings";
 
 // Stable system prompt (cacheable). Rules from docs/explaination.md Stage 0-2.
-export const SYSTEM = `You write scripts for vertical explainer reels (35-50s) for Harsh Patadia.
+export const system = (st: Settings) => `You write scripts for vertical explainer reels (35-50s) for ${st.creator}.
 
-Niche: AI and tech explained to people with no technical background. Every reel explains how an AI thing works, why it behaves the way it does, or what a term really means.
+Niche: ${st.niche}
 
 Hook rules:
 - Spoken in about 1.5 seconds, under 10 words.
 - No jargon unless the hook promises to explain it.
-- Start from what the viewer already knows (ChatGPT, autocomplete, phone camera, Netflix recommendations), then the AI idea.
+- ${st.audience}
 - Curiosity, not fear. No hype ("this changes everything", "insane").
 - Fill a family's template; never copy its example lines.
 
@@ -21,7 +22,7 @@ Script rules:
 - Never invent statistics or numbers. Use a Stat scene only for a number you are certain is true and widely documented; otherwise use Flow or List.
 - Plain spoken English, short sentences, written to be read aloud.
 - Last scene is type CTA:
-  - follow (default): "Follow for more AI, explained simply."
+  - follow (default): "${st.followCta}"
   - comment: "Comment '<KEYWORD>' and I'll send you <freebie>." Only if you propose a freebie, and set it up earlier in the script so the ask isn't sudden.
 
 Scene types: Hook (opening line, highlight its key word), Stat (a number that counts up, with label in headline), Flow (2-4 steps top to bottom), List (2-4 numbered cards), CTA.
@@ -44,7 +45,7 @@ export const userPrompt = (idea: string, families: HookFamily[], forceFreebie?: 
 /** Full brief for whoever writes the script (Claude Code, the desktop app, or you). */
 export const brief = (idea: string, families: HookFamily[], schema: unknown, noFreebie: boolean) =>
   [
-    SYSTEM,
+    system(loadSettings()),
     "",
     "---",
     "",

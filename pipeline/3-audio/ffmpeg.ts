@@ -3,7 +3,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 /** ffmpeg on PATH, else the winget install location (PATH only refreshes in new shells). */
-const findFfmpeg = (): string => {
+export const findFfmpeg = (): string => {
   if (spawnSync("ffmpeg", ["-version"]).status === 0) return "ffmpeg";
   const pkgs = join(process.env.LOCALAPPDATA ?? "", "Microsoft", "WinGet", "Packages");
   const pkg = existsSync(pkgs) ? readdirSync(pkgs).find((d) => d.startsWith("Gyan.FFmpeg")) : undefined;

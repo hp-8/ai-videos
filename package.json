@@ -22,21 +22,25 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@fontsource-variable/onest": "^5.3.1",
     "@remotion/eslint-config-flat": "4.0.546",
     "@types/node": "^26.6.6",
     "@types/react": "19.3.0",
+    "@types/react-dom": "^19.3.0",
     "@types/web": "0.0.166",
     "eslint": "10.15.0",
     "prettier": "3.8.1",
     "tsx": "^4.23.15",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vite": "^8.4.0"
   },
   "scripts": {
     "dev": "remotion studio",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src pipeline && tsc",
-    "reel": "node --import tsx pipeline/cli.ts"
+    "reel": "node --import tsx pipeline/cli.ts",
+    "ui": "node --import tsx ui/server.ts"
   },
   "allowScripts": {
     "esbuild": false

@@ -29,3 +29,8 @@ export const glass: React.CSSProperties = {
   boxShadow: "0 24px 60px rgba(0,0,0,0.45)",
   borderRadius: 36,
 };
+
+/** Brand from timeline.json (user settings). Mutates the shared tokens so every scene picks it up. */
+export const applyBrand = (brand: { bg: string; accent: string; connector: string; text: string; muted: string } | undefined) => {
+  if (brand) Object.assign(colors, { bg: brand.bg, accent: brand.accent, connector: brand.connector, text: brand.text, muted: brand.muted });
+};

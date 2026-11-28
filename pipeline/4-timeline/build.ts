@@ -5,6 +5,7 @@ import { ffmpeg } from "../3-audio/ffmpeg";
 import type { SceneTiming } from "../3-audio/match";
 import type { Word } from "../3-audio/transcribe";
 import { readJson } from "../paths";
+import { loadSettings, type Brand } from "../settings";
 import { video } from "../../src/theme/tokens";
 
 const PAUSE_MS = 500; // after every scene except the hook
@@ -23,6 +24,7 @@ export type Timeline = {
   audio: string;
   keyword: string;
   cta: ScriptFile["cta"];
+  brand?: Brand; // snapshot of settings at build time; older timelines use the defaults
   scenes: TimelineScene[];
 };
 
@@ -64,7 +66,7 @@ export const buildTimeline = (dir: string): Timeline => {
     `;${cuts.map((_, i) => `[a${i}]`).join("")}concat=n=${cuts.length}:v=0:a=1[out]`;
   ffmpeg(["-i", join(dir, "audio", "clean.wav"), "-filter_complex", filter, "-map", "[out]", join(dir, "audio", "narration.wav")]);
 
-  const timeline: Timeline = { fps, durationInFrames: from, audio: "audio/narration.wav", keyword: script.keyword, cta: script.cta, scenes };
+  const timeline: Timeline = { fps, durationInFrames: from, audio: "audio/narration.wav", keyword: script.keyword, cta: script.cta, brand: loadSettings().brand, scenes };
   writeFileSync(join(dir, "timeline.json"), JSON.stringify(timeline, null, 2) + "\n");
 
   console.log(`\nTimeline: ${scenes.length} scenes, ${(from / fps).toFixed(1)}s (${from} frames at ${fps} fps)`);

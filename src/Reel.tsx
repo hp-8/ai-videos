@@ -4,7 +4,10 @@ import type { Timeline, TimelineScene } from "../pipeline/4-timeline/build";
 import { Captions } from "./captions/Captions";
 import { SCENES } from "./scenes/scenes";
 import { Background } from "./theme/Background";
-import { colors } from "./theme/tokens";
+import { getAvailableFonts } from "@remotion/google-fonts";
+import { useEffect, useState } from "react";
+import { continueRender, delayRender } from "remotion";
+import { applyBrand, colors, type } from "./theme/tokens";
 
 export type ReelProps = { timeline: Timeline | null };
 
@@ -57,8 +60,29 @@ const Progress: React.FC<{ total: number }> = ({ total }) => {
   return <div style={{ position: "absolute", top: 0, left: 0, height: 8, width: `${(frame / total) * 100}%`, background: colors.accent }} />;
 };
 
+/** Loads a non-default Google font from the brand settings before the first frame. */
+const useBrandFont = (font: string | undefined) => {
+  const [handle] = useState(() => (font && font !== "Inter" ? delayRender(`font ${font}`) : null));
+  useEffect(() => {
+    if (handle === null) return;
+    const entry = getAvailableFonts().find((f) => f.fontFamily === font);
+    if (!entry) return continueRender(handle); // unknown name: keep Inter
+    entry
+      .load()
+      .then((m) => {
+        const f = m.loadFont("normal", { weights: ["700", "900"], subsets: ["latin"] });
+        type.family = f.fontFamily;
+        return f.waitUntilDone();
+      })
+      .catch(() => undefined) // font lacks 700/900: keep Inter
+      .finally(() => continueRender(handle));
+  }, [font, handle]);
+};
+
 export const Reel: React.FC<ReelProps> = ({ timeline }) => {
   const { durationInFrames } = useVideoConfig();
+  applyBrand(timeline?.brand);
+  useBrandFont(timeline?.brand?.font);
   if (!timeline)
     return (
       <AbsoluteFill style={{ background: colors.bg, color: colors.text, fontSize: 48, padding: 120, justifyContent: "center", fontFamily: "sans-serif" }}>
