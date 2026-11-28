@@ -61,6 +61,25 @@ All three voice modes converge on the same audio stage:
 
 That timing data drives everything downstream: captions highlight the word being spoken, and key visuals hit on the exact frame the word lands.
 
+### A frame-exact timeline
+
+Each scene is cut from the narration, given a 0.5s breath (none after the hook, so the opening never stalls), and padded to a **whole number of frames** before everything is joined into one track. Audio and visuals can't drift: a 1008-frame timeline produces a narration track of exactly 33.600s.
+
+### Motion built in code, not templates
+
+Five scene types (**Hook, Stat, Flow, List, CTA**) share one set of named spring presets (*snappy, smooth, punchy*) and one set of color and type tokens.
+
+- **Text** slides up word by word out of a masked edge, never a plain fade.
+- **Numbers** count up with a slight overshoot and settle.
+- **List items and flow steps** arrive on the frame their words are spoken.
+- **Transitions** are designed: zoom through, whip pan with blur, an accent-colored wipe.
+- **The camera** is never fully still: a slow push in, over a drifting glow with film grain and a vignette.
+- **The hook** is readable on frame 0 and settles within 10 frames.
+
+### Captions and packaging
+
+Captions show four words at a time, with the spoken word highlighted, and stay off during the hook. One render command produces the mp4, a cover image, a caption file per platform (Instagram, YouTube Shorts, X) and a hook record that ties the reel back to its hook family for performance learning.
+
 ---
 
 ## Quick start
@@ -82,10 +101,12 @@ npm run reel -- audio tokens                           # your own recording
 npm run reel -- voice tokens --voice michael --tempo 1.1   # or a generated voice
 ```
 
-Preview in Remotion Studio:
+Watch it in Remotion Studio, then render:
 
 ```bash
-npm run dev
+npm run reel -- preview tokens            # opens Studio in the browser
+npm run reel -- render tokens --preview   # scene stills + first 3 seconds
+npm run reel -- render tokens             # reel.mp4, cover, captions
 ```
 
 <details>
@@ -95,7 +116,10 @@ npm run dev
 npm run reel -- show <video>                   print the script, hooks and timing
 npm run reel -- hook <video> <1-3>             swap to a different hook
 npm run reel -- freebie <video> yes|no         accept or drop the proposed freebie
-npm run reel -- audio <video>                  clean, transcribe and align the narration
+npm run reel -- audio <video>                  clean, transcribe, align, then build the timeline
+npm run reel -- timeline <video>               rebuild timeline.json and the narration track
+npm run reel -- preview <video>                open the reel in Remotion Studio
+npm run reel -- render <video> [--preview]     stills and 3s clip; without --preview also mp4, cover, captions
 npm run reel -- voice <video> [--voice <name>] [--tempo 1.1] [--engine <e>] [--default] [--force]
 npm run reel -- voices                         list your voices
 npm run reel -- presets kokoro                 browse ready-made voices
@@ -117,11 +141,12 @@ npm run reel -- voice-add <name> --clone sample.wav [--engine chatterbox_turbo]
 | 1. Script and freebie decision | ✅ |
 | 2. Voice generation and cloning | ✅ |
 | 3. Cleanup, transcription and scene alignment | ✅ |
-| 4. Timeline | 🔨 next |
-| 5. Animated scenes: springs, masked text reveals, designed transitions | ⏳ |
-| 6. Word-highlight captions | ⏳ |
-| 7. Render, cover and per-platform captions | ⏳ |
+| 4. Timeline | ✅ |
+| 5. Animated scenes: springs, masked text reveals, designed transitions | ✅ first pass |
+| 6. Word-highlight captions | ✅ |
+| 7. Render, cover and per-platform captions | ✅ |
 | Freebie: matching PDF, landing page and DM pack, built in the same run | ⏳ |
+| Performance learning from post analytics | ⏳ |
 
 ---
 
@@ -133,8 +158,15 @@ pipeline/
   1-script/    brief, schema and rule checker
   2-voice/     Voicebox client: presets, cloning, tempo
   3-audio/     FFmpeg cleanup, whisper.cpp, scene alignment
+  4-timeline/  frame-exact scene lengths and the joined narration track
+  7-render/    stills, preview clip, mp4, cover, captions, hook record
   cli.ts       one entry point: npm run reel -- <command>
-src/           Remotion composition and theme tokens
+src/
+  scenes/      Hook, Stat, Flow, List, CTA
+  motion/      spring presets, word reveals, sync helpers
+  captions/    word-highlight captions
+  theme/       color and type tokens, background
+  Reel.tsx     scenes, transitions, camera, audio
 hook-bank/     hooks.sample.json (public sample; the full bank stays private)
 videos/        one folder per reel (git-ignored)
 ```
