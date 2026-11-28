@@ -19,7 +19,7 @@ const motion = (kind: TimelineScene["transition"], t: number, out: boolean): Rea
   // t: 0→1 through the move. Exits run 0→1 forward, entrances 1→0 (arriving).
   switch (kind) {
     case "zoom":
-      return out ? { scale: 1 + 1.4 * t, opacity: 1 - t, filter: `blur(${12 * t}px)` } : { scale: 1 - 0.3 * t, opacity: 1 - t };
+      return out ? { scale: 1 + 1.4 * t, opacity: 1 - 0.75 * t, filter: `blur(${12 * t}px)` } : { scale: 1 - 0.3 * t, opacity: 1 - 0.6 * t }; // never fully empty
     case "whip":
       return { translate: `${(out ? -1 : 1) * 1080 * t}px 0`, filter: `blur(${30 * t}px)` };
     case "match":

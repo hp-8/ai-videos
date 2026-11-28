@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { z } from "zod";
 import { candidateFamilies } from "./0-hooks/bank";
@@ -8,6 +8,7 @@ import { generateVoice, saveVoiceConfig, loadVoiceConfig, type VoiceOpts } from 
 import { createClone, createPreset, ENGINES, listPresets, listProfiles, type Engine } from "./2-voice/voicebox";
 import { processAudio } from "./3-audio/run";
 import { buildTimeline } from "./4-timeline/build";
+import { render, stage } from "./7-render/render";
 import { transcribeWords } from "./3-audio/transcribe";
 import { ScriptOut } from "./1-script/schema";
 import { join } from "node:path";
@@ -24,6 +25,7 @@ const USAGE = `Usage:
   npm run reel -- freebie <video> yes|no     confirm or decline the freebie
   npm run reel -- audio <video>              clean recording, word timing, scene match, then timeline
   npm run reel -- preview <video>            open the reel in Remotion Studio (browser)
+  npm run reel -- render <video> [--preview] stills + first 3s clip; without --preview also reel.mp4, cover, captions
   npm run reel -- timeline <video>           rebuild timeline.json and audio/narration.wav
 
 Voice: record yourself (drop files in audio/raw/), or generate with Voicebox (app must be open):
@@ -120,13 +122,15 @@ const main = async () => {
 
   if (cmd === "preview") {
     const dir = existsSync(args[0] ?? "") ? args[0] : resolve(args[0] ?? "");
-    const cur = join(ROOT, "public", "current");
-    if (!existsSync(join(dir, "timeline.json"))) throw new Error("No timeline.json yet. Run audio (or timeline) first.");
-    mkdirSync(cur, { recursive: true });
-    copyFileSync(join(dir, "timeline.json"), join(cur, "timeline.json"));
-    copyFileSync(join(dir, "audio", "narration.wav"), join(cur, "narration.wav"));
+    stage(dir);
     console.log(`Previewing ${dir}`);
     spawnSync("npx", ["remotion", "studio"], { stdio: "inherit", shell: true });
+    return;
+  }
+
+  if (cmd === "render") {
+    const dir = existsSync(args[0] ?? "") ? args[0] : resolve(args[0] ?? "");
+    await render(dir, args.includes("--preview"));
     return;
   }
 
