@@ -1,6 +1,7 @@
 import { Audio } from "@remotion/media";
 import { AbsoluteFill, Easing, interpolate, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import type { Timeline, TimelineScene } from "../pipeline/4-timeline/build";
+import { Captions } from "./captions/Captions";
 import { SCENES } from "./scenes/scenes";
 import { Background } from "./theme/Background";
 import { colors } from "./theme/tokens";
@@ -70,6 +71,8 @@ export const Reel: React.FC<ReelProps> = ({ timeline }) => {
       {timeline.scenes.map((s, i) => (
         <Sequence key={i} name={`${i + 1}. ${s.type}`} from={s.from} durationInFrames={s.durationInFrames}>
           <SceneShell scene={s} enter={timeline.scenes[i - 1]?.transition ?? null} reel={timeline} />
+          {/* Captions off during the hook so they don't compete with the hook text */}
+          {s.type !== "Hook" && <Captions words={s.words} />}
         </Sequence>
       ))}
       {timeline.scenes.map((s, i) =>
