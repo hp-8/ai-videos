@@ -6,6 +6,7 @@ import { brief } from "./1-script/prompt";
 import { generateVoice, saveVoiceConfig, loadVoiceConfig, type VoiceOpts } from "./2-voice/run";
 import { createClone, createPreset, ENGINES, listPresets, listProfiles, type Engine } from "./2-voice/voicebox";
 import { processAudio } from "./3-audio/run";
+import { buildTimeline } from "./4-timeline/build";
 import { transcribeWords } from "./3-audio/transcribe";
 import { ScriptOut } from "./1-script/schema";
 import { join } from "node:path";
@@ -20,7 +21,8 @@ const USAGE = `Usage:
   npm run reel -- show <video>
   npm run reel -- hook <video> <1-3>         pick a different hook
   npm run reel -- freebie <video> yes|no     confirm or decline the freebie
-  npm run reel -- audio <video>              clean recording, word timing, scene match
+  npm run reel -- audio <video>              clean recording, word timing, scene match, then timeline
+  npm run reel -- timeline <video>           rebuild timeline.json and audio/narration.wav
 
 Voice: record yourself (drop files in audio/raw/), or generate with Voicebox (app must be open):
   npm run reel -- voice <video> [--voice <name>] [--engine <e>] [--tempo 1.1] [--default] [--force]
@@ -108,7 +110,14 @@ const main = async () => {
   }
 
   if (cmd === "audio") {
-    await processAudio(resolve(args[0] ?? ""));
+    const dir = resolve(args[0] ?? "");
+    await processAudio(dir);
+    buildTimeline(dir);
+    return;
+  }
+
+  if (cmd === "timeline") {
+    buildTimeline(resolve(args[0] ?? ""));
     return;
   }
 
@@ -122,6 +131,7 @@ const main = async () => {
     }
     await generateVoice(dir, opts, args.includes("--force"));
     await processAudio(dir);
+    buildTimeline(dir);
     return;
   }
 
