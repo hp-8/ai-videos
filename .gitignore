@@ -34,3 +34,6 @@ dist/
 
 # Your default generated voice
 voice.config.json
+
+# Current preview copy of a video (from reel preview)
+public/current/

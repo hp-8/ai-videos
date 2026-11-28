@@ -1,4 +1,5 @@
-import { existsSync, readFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { z } from "zod";
 import { candidateFamilies } from "./0-hooks/bank";
 import { checkScript } from "./1-script/check";
@@ -22,6 +23,7 @@ const USAGE = `Usage:
   npm run reel -- hook <video> <1-3>         pick a different hook
   npm run reel -- freebie <video> yes|no     confirm or decline the freebie
   npm run reel -- audio <video>              clean recording, word timing, scene match, then timeline
+  npm run reel -- preview <video>            open the reel in Remotion Studio (browser)
   npm run reel -- timeline <video>           rebuild timeline.json and audio/narration.wav
 
 Voice: record yourself (drop files in audio/raw/), or generate with Voicebox (app must be open):
@@ -113,6 +115,18 @@ const main = async () => {
     const dir = resolve(args[0] ?? "");
     await processAudio(dir);
     buildTimeline(dir);
+    return;
+  }
+
+  if (cmd === "preview") {
+    const dir = existsSync(args[0] ?? "") ? args[0] : resolve(args[0] ?? "");
+    const cur = join(ROOT, "public", "current");
+    if (!existsSync(join(dir, "timeline.json"))) throw new Error("No timeline.json yet. Run audio (or timeline) first.");
+    mkdirSync(cur, { recursive: true });
+    copyFileSync(join(dir, "timeline.json"), join(cur, "timeline.json"));
+    copyFileSync(join(dir, "audio", "narration.wav"), join(cur, "narration.wav"));
+    console.log(`Previewing ${dir}`);
+    spawnSync("npx", ["remotion", "studio"], { stdio: "inherit", shell: true });
     return;
   }
 

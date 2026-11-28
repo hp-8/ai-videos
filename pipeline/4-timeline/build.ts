@@ -17,7 +17,14 @@ export type TimelineScene = ScriptFile["scenes"][number] & {
   words: Word[]; // times relative to the scene start
   transition: (typeof TRANSITIONS)[number] | null; // into the next scene
 };
-export type Timeline = { fps: number; durationInFrames: number; audio: string; scenes: TimelineScene[] };
+export type Timeline = {
+  fps: number;
+  durationInFrames: number;
+  audio: string;
+  keyword: string;
+  cta: ScriptFile["cta"];
+  scenes: TimelineScene[];
+};
 
 export const buildTimeline = (dir: string): Timeline => {
   const script = readJson<ScriptFile>(join(dir, "script.json"));
@@ -57,7 +64,7 @@ export const buildTimeline = (dir: string): Timeline => {
     `;${cuts.map((_, i) => `[a${i}]`).join("")}concat=n=${cuts.length}:v=0:a=1[out]`;
   ffmpeg(["-i", join(dir, "audio", "clean.wav"), "-filter_complex", filter, "-map", "[out]", join(dir, "audio", "narration.wav")]);
 
-  const timeline: Timeline = { fps, durationInFrames: from, audio: "audio/narration.wav", scenes };
+  const timeline: Timeline = { fps, durationInFrames: from, audio: "audio/narration.wav", keyword: script.keyword, cta: script.cta, scenes };
   writeFileSync(join(dir, "timeline.json"), JSON.stringify(timeline, null, 2) + "\n");
 
   console.log(`\nTimeline: ${scenes.length} scenes, ${(from / fps).toFixed(1)}s (${from} frames at ${fps} fps)`);
