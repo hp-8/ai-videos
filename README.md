@@ -148,6 +148,10 @@ npm run reel -- voice-add <name> --clone sample.wav [--engine chatterbox_turbo]
 | Freebie: matching PDF, landing page and DM pack, built in the same run | ⏳ |
 | Performance learning from post analytics | ⏳ |
 
+### Coming next: a web UI anyone can run
+
+Phase 2 adds `npm run ui`: a browser interface that runs on your own machine. Clone the repo, open the page, and make reels by clicking through it: pick a hook, record in the browser, preview, render, copy the captions. First-run setup checks your tools and asks for your own brand, niche and call to action. Scripts are written with your own Claude Code login or an Anthropic API key. Everything you make stays on your computer.
+
 ---
 
 ## Layout
