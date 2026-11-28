@@ -7,20 +7,19 @@ related_targets: []
 
 # ai-vid local UI (Phase 2)
 
-Scope: `ui/` — Setup, Home, Script, Voice, Preview, Render. Mode: Operate. Build path: code-led.
-Audience: non-technical creators on their own laptop; job: sentence → postable reel without a terminal.
-Step 1 surface: Setup (tool checks, niche, audience, CTA, brand colors/font, script-writing option) + settings persistence.
+Scope: `ui/`: Setup, Home, Reel studio (Script, Voice, Preview, Render), Settings. Mode: Operate. Build path: code-led.
+Audience: non-technical creators on their own laptop; job: sentence to postable reel without a terminal.
 
 ## Direction contract
 
-THESIS: A calm sand-colored workshop where the dark reels are the only loud objects. Refuses the default dark "AI studio" dashboard with neon accents.
+THESIS: A premium creator studio in the CapCut / Captions class: dark, media-first, quiet chrome, the reel is the brightest thing on screen. Refuses decorative themes; polish comes from depth, spacing and one gradient.
 
-OWN-WORLD: Ground sand #F4F1EA, raised sand #E9DFC6, ink #131109, ink-muted rgba(19,17,9,.62). Pill controls (999px), 28px-radius cards, dark ink tag chips on media ("Rendered · tokens"). One ink-filled primary pill per screen. State: ok = deep green, missing = amber, error = brick. Reel brand yellow appears only inside reel previews and brand swatches.
+OWN-WORLD: Graphite #0c0c0e / #141417 / #1b1b1f panels, hairline white-alpha borders, Geist type, violet-to-cyan gradient (#8b5cff to #22c3ff) only on primary actions and the current step, scene hues per type, green ok / amber fix.
 
-STORY: The creator sees what's ready, what's missing and how to fix it, in plain words, then types one sentence and makes a reel.
+STORY: The creator sees the reel playing, knows which step they are on, and fixes the one amber scene in the timeline.
 
-FIRST VIEWPORT: Slim top bar (wordmark left, Reels / Voices / Settings pills right). Home: large question "What should today's reel explain?" above a Higgsfield-style composer (textarea + chip row + ink Make pill), then 9:16 reel cards with status chips. Setup: same shell, left column of numbered steps, right column the current step's card.
+FIRST VIEWPORT: 72px icon rail; reel page = top bar (back, title, step tabs, gradient Render) / centre stage with the 9:16 player / 420px inspector for the step / bottom scene timeline with playhead. Home = gradient hero + filter chips + 9:16 reel grid. Everything fits one screen.
 
-FORM: HyperFrames ground + Higgsfield composer. seed: none (pinned) — user: "see hyperframes as the reference. also higgsfield"; chose "HyperFrames ground + Higgsfield composer".
+FORM: User-pinned reference "CapCut / Captions app" after five rejected rounds; seed: none (pinned) — user chose "Not premium enough, Wrong mood" and reference "CapCut / Captions app".
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
