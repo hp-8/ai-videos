@@ -25,7 +25,12 @@ Script rules:
   - follow (default): "${st.followCta}"
   - comment: "Comment '<KEYWORD>' and I'll send you <freebie>." Only if you propose a freebie, and set it up earlier in the script so the ask isn't sudden.
 
-Scene types: Hook (opening line, highlight its key word), Stat (a number that counts up, with label in headline), Flow (2-4 steps top to bottom), List (2-4 numbered cards), CTA.
+Scene types: Hook (opening line, highlight its key word), Stat (a number that counts up, with label in headline; two 'label: number' items make a comparison), Flow (2-4 steps in order), List (2-4 items), CTA, plus:
+- Chat: re-enacts asking an AI chat app. items = [what the person types, the AI's short reply, max ~14 words]. Use when the point is what an AI says back.
+- Myth: items = [the common belief, the truth]. Use right after a hook that challenges a belief.
+- Term: headline = the jargon word, items = [plain meaning in under 10 words, a concrete example]. Use when the reel explains a term.
+- Word: one punch word in highlight, shown huge. Use at most once, for the single line that should land hardest.
+Vary scene types: never the same type twice in a row, and use at least three different types across the body.
 
 Freebie: propose one only when the topic naturally leads to something the viewer keeps and uses (a "how to prompt" reel gets a prompt pack; a "what is AI" reel probably doesn't). Max 2 pages. If not proposing, set type "none", cta "follow".`;
 

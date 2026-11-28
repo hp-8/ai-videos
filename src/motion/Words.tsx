@@ -12,12 +12,14 @@ export const Words: React.FC<{
   delay?: number;
   stagger?: number;
   visibleAtStart?: boolean; // hook rule: readable on frame 0, motion is a settle, not a reveal
-}> = ({ text, highlight = "", size, delay = 0, stagger = 3, visibleAtStart = false }) => {
+  align?: "center" | "left";
+  color?: string;
+}> = ({ text, highlight = "", size, delay = 0, stagger = 3, visibleAtStart = false, align = "center", color }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const keys = new Set(highlight.split(/\s+/).map(norm).filter(Boolean));
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", columnGap: size * 0.25, fontFamily: t.family, fontWeight: t.weight, letterSpacing: t.tracking, fontSize: size, lineHeight: 1.05, color: colors.text, textAlign: "center" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: align === "left" ? "flex-start" : "center", columnGap: size * 0.25, fontFamily: t.family, fontWeight: t.weight, letterSpacing: t.tracking, fontSize: size, lineHeight: 1.05, color: color ?? colors.text, textAlign: align }}>
       {text.split(/\s+/).filter(Boolean).map((w, i) => {
         const p = pop(frame, fps, delay + i * stagger, "snappy");
         const key = keys.has(norm(w));

@@ -2,7 +2,7 @@ import { Audio } from "@remotion/media";
 import { AbsoluteFill, Easing, interpolate, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import type { Timeline, TimelineScene } from "../pipeline/4-timeline/build";
 import { Captions } from "./captions/Captions";
-import { SCENES } from "./scenes/scenes";
+import { pickLayout } from "./scenes/scenes";
 import { Background } from "./theme/Background";
 import { getAvailableFonts } from "@remotion/google-fonts";
 import { useEffect, useState } from "react";
@@ -32,9 +32,9 @@ const motion = (kind: TimelineScene["transition"], t: number, out: boolean): Rea
   }
 };
 
-const SceneShell: React.FC<{ scene: TimelineScene; enter: TimelineScene["transition"]; reel: Timeline }> = ({ scene, enter, reel }) => {
+const SceneShell: React.FC<{ scene: TimelineScene; index: number; enter: TimelineScene["transition"]; reel: Timeline }> = ({ scene, index, enter, reel }) => {
   const frame = useCurrentFrame();
-  const C = SCENES[scene.type];
+  const C = pickLayout(scene, index, reel.keyword);
   const d = scene.durationInFrames;
   const style = {
     ...(enter ? motion(enter, interpolate(frame, [0, IN], [1, 0], ease), false) : {}),
@@ -94,9 +94,9 @@ export const Reel: React.FC<ReelProps> = ({ timeline }) => {
       <Background />
       {timeline.scenes.map((s, i) => (
         <Sequence key={i} name={`${i + 1}. ${s.type}`} from={s.from} durationInFrames={s.durationInFrames}>
-          <SceneShell scene={s} enter={timeline.scenes[i - 1]?.transition ?? null} reel={timeline} />
+          <SceneShell scene={s} index={i} enter={timeline.scenes[i - 1]?.transition ?? null} reel={timeline} />
           {/* Captions off during the hook so they don't compete with the hook text */}
-          {s.type !== "Hook" && <Captions words={s.words} />}
+          {s.type !== "Hook" && s.type !== "Chat" && <Captions words={s.words} />}
         </Sequence>
       ))}
       {timeline.scenes.map((s, i) =>

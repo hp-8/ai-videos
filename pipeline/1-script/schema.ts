@@ -1,13 +1,13 @@
 import { z } from "zod";
 
-export const SceneType = z.enum(["Hook", "Stat", "Flow", "List", "CTA"]);
+export const SceneType = z.enum(["Hook", "Stat", "Flow", "List", "CTA", "Chat", "Myth", "Term", "Word"]);
 
 export const Scene = z.object({
   type: SceneType,
   narration: z.string().describe("Exact words spoken in this scene"),
-  headline: z.string().describe("Short on-screen text, max ~6 words; empty if none"),
+  headline: z.string().describe("Short on-screen text, max ~6 words; Term: the term itself; empty if none"),
   highlight: z.string().describe("The key word or number shown in yellow; empty if none"),
-  items: z.array(z.string()).describe("Flow steps or List items, max 4, each max ~4 words; empty otherwise"),
+  items: z.array(z.string()).describe("Flow steps or List items (max 4, each max ~4 words); Chat: [question, short reply]; Myth: [belief, truth]; Term: [plain meaning, example]; Stat comparison: two 'label: number' entries; empty otherwise"),
   value: z.string().describe("Stat only: the number, e.g. '100,000'; empty otherwise"),
 });
 

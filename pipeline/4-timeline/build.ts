@@ -17,6 +17,7 @@ export type TimelineScene = ScriptFile["scenes"][number] & {
   durationInFrames: number;
   words: Word[]; // times relative to the scene start
   transition: (typeof TRANSITIONS)[number] | null; // into the next scene
+  layout?: number; // force a layout variant (index into LAYOUTS[type]); otherwise picked automatically
 };
 export type Timeline = {
   fps: number;

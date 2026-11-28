@@ -1,9 +1,11 @@
 import { Composition, staticFile } from "remotion";
 import type { Timeline } from "../pipeline/4-timeline/build";
+import { Gallery, GALLERY_FRAMES } from "./Gallery";
 import { Reel, type ReelProps } from "./Reel";
 import { video } from "./theme/tokens";
 
 export const RemotionRoot: React.FC = () => (
+  <>
   <Composition
     id="Reel"
     component={Reel}
@@ -19,4 +21,6 @@ export const RemotionRoot: React.FC = () => (
       return timeline ? { props: { timeline }, durationInFrames: timeline.durationInFrames, fps: timeline.fps } : {};
     }}
   />
+  <Composition id="Gallery" component={Gallery} durationInFrames={GALLERY_FRAMES} fps={video.fps} width={video.width} height={video.height} />
+  </>
 );

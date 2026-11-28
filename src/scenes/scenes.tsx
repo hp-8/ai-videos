@@ -3,6 +3,7 @@ import type { Timeline, TimelineScene } from "../../pipeline/4-timeline/build";
 import { itemFrames, pop, spokenAt } from "../motion/presets";
 import { Words } from "../motion/Words";
 import { colors, glass, safe, type as t } from "../theme/tokens";
+import { Chat, FlowCycle, FlowPipeline, HookCard, HookPoster, ListCheck, ListGrid, Myth, StatBar, StatCompare, Term, Word } from "./layouts";
 
 type P = { scene: TimelineScene; reel: Pick<Timeline, "keyword" | "cta"> };
 
@@ -127,4 +128,27 @@ export const CTA: React.FC<P> = ({ scene, reel }) => {
   );
 };
 
-export const SCENES = { Hook, Stat, Flow, List, CTA } satisfies Record<TimelineScene["type"], React.FC<P>>;
+/** Every layout for each scene type. The first is the default. */
+export const LAYOUTS = {
+  Hook: [Hook, HookPoster, HookCard],
+  Stat: [Stat, StatBar],
+  Flow: [Flow, FlowPipeline, FlowCycle],
+  List: [List, ListGrid, ListCheck],
+  CTA: [CTA],
+  Chat: [Chat],
+  Myth: [Myth],
+  Term: [Term],
+  Word: [Word],
+} satisfies Record<TimelineScene["type"], React.FC<P>[]>;
+
+/**
+ * Which layout a scene uses: its own `layout` if set, a data-driven pick (two numbers -> comparison),
+ * else a steady per-reel rotation so neighbouring reels and scenes don't all look the same.
+ */
+export const pickLayout = (scene: TimelineScene, index: number, keyword: string): React.FC<P> => {
+  const all: React.FC<P>[] = LAYOUTS[scene.type];
+  if (scene.layout !== undefined) return all[scene.layout % all.length];
+  if (scene.type === "Stat" && scene.items.length >= 2 && scene.items.every((i) => /:\s*\D*\d/.test(i))) return StatCompare;
+  const seed = [...keyword].reduce((n, c) => n + c.charCodeAt(0), 0);
+  return all[(seed + index) % all.length];
+};
