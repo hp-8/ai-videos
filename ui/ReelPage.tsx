@@ -273,8 +273,18 @@ const ScriptTab = ({ r, reload, next }: { r: ReelDetail; reload: () => void; nex
           )}
         </div>
       )}
+      <h3 className="sub">Scenes {locked && <span className="hint">· edits mean re-recording that scene</span>}</h3>
+      <ol className="scenes edit">
+        {s.scenes.map((sc, i) => (
+          <li key={`${r.id}-${i}-${sc.narration}`}>
+            <span className="scene-type">{i + 1} · {sc.type}{i === 0 && " · the opening line, set by the hook above"}</span>
+            <textarea className="input scene-in" defaultValue={sc.narration} disabled={i === 0} rows={2}
+              onBlur={(e) => { const t = e.target.value.trim(); if (t && t !== sc.narration) act(api.editScene(r.id, i, t)); }} />
+          </li>
+        ))}
+      </ol>
       {err && <p className="error" role="alert">{err}</p>}
-      <div className="foot"><span className="foot-note">The full script is on the Voice step, scene by scene.</span><a className="btn btn-ink" href={next}>Record the voice<Arrow /></a></div>
+      <div className="foot"><span className="foot-note">Changes save when you click away.</span><a className="btn btn-ink" href={next}>Record the voice<Arrow /></a></div>
     </section>
   );
 };

@@ -9,6 +9,7 @@
   },
   "private": true,
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.14.0",
     "@remotion/bundler": "4.0.546",
     "@remotion/captions": "^4.0.546",
     "@remotion/cli": "4.0.546",

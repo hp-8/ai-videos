@@ -26,8 +26,10 @@ export const api = {
   checks: () => call<Check[]>("/api/checks"),
   fonts: () => call<string[]>("/api/fonts"),
   reels: () => call<ReelSummary[]>("/api/reels"),
+  newReel: (idea: string, noFreebie: boolean) => call<Job>("/api/reels", { method: "POST", body: JSON.stringify({ idea, noFreebie }) }),
   reel: (id: string) => call<ReelDetail>(`/api/reels/${enc(id)}`),
   pickHook: (id: string, index: number) => call(`/api/reels/${enc(id)}/hook`, { method: "POST", body: JSON.stringify({ index }) }),
+  editScene: (id: string, index: number, narration: string) => call(`/api/reels/${enc(id)}/scene`, { method: "POST", body: JSON.stringify({ index, narration }) }),
   freebie: (id: string, yes: boolean) => call(`/api/reels/${enc(id)}/freebie`, { method: "POST", body: JSON.stringify({ yes }) }),
   /** Raw audio upload. `scene` is 1-based; omit it for a whole take. */
   upload: async (id: string, blob: Blob, ext: string, scene?: number) => {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { api, type ReelSummary } from "./api";
+import { api, type Job, type ReelSummary } from "./api";
 import { Thumb } from "./App";
-import { Plus } from "./icons";
+import { Sparkle } from "./icons";
 
 const date = (iso: string) => new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 const FILTERS: { id: "all" | ReelSummary["status"]; label: string }[] = [
@@ -25,10 +25,7 @@ export const Home = () => {
           <h1>Turn one sentence into a reel.</h1>
           <p>Script, voice, captions and motion, made on this computer.</p>
         </div>
-        <div className="create" aria-disabled="true">
-          <span className="create-ic"><Plus /></span>
-          <span><b>New reel</b><small>Writing scripts here comes next. For now use <code>/reel</code> in Claude Code.</small></span>
-        </div>
+        <Composer />
       </section>
       <div className="bar">
         <h2>Your reels</h2>
@@ -54,5 +51,48 @@ export const Home = () => {
         {reels && list.length === 0 && <li className="none">No reels here yet.</li>}
       </ul>
     </main>
+  );
+};
+
+const EXAMPLES = ["Why ChatGPT makes things up", "What an AI agent actually is", "How your phone camera knows it's a face"];
+
+/** One sentence in, a reel folder out. Lands in the new reel's Script step when done. */
+const Composer = () => {
+  const [idea, setIdea] = useState("");
+  const [freebie, setFreebie] = useState(true);
+  const [job, setJob] = useState<Job | null>(null);
+  const [err, setErr] = useState("");
+  const busy = job?.state === "running";
+  useEffect(() => {
+    if (!busy) return;
+    const t = setInterval(async () => {
+      const j = await api.job();
+      if (!j || j.id !== job!.id) return;
+      setJob(j);
+      if (j.state === "done") location.hash = `#/reel/${encodeURIComponent(String(j.result))}/script`;
+      if (j.state === "failed") setErr(j.error ?? "Something went wrong.");
+    }, 1000);
+    return () => clearInterval(t);
+  }, [busy, job]);
+  const go = async () => {
+    setErr("");
+    try { setJob(await api.newReel(idea, !freebie)); } catch (e) { setErr((e as Error).message); }
+  };
+  return (
+    <form className="composer" onSubmit={(e) => { e.preventDefault(); if (!busy && idea.trim()) go(); }}>
+      <textarea className="composer-in" rows={2} placeholder="What should this reel explain? One sentence." value={idea} disabled={busy}
+        onChange={(e) => setIdea(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} />
+      {!idea && !busy && (
+        <div className="examples">{EXAMPLES.map((x) => <button type="button" key={x} onClick={() => setIdea(x)}>{x}</button>)}</div>
+      )}
+      <div className="composer-bar">
+        <button type="button" className={`pill${freebie ? " on" : ""}`} onClick={() => setFreebie(!freebie)} disabled={busy} aria-pressed={freebie}>
+          Freebie {freebie ? "allowed" : "off"}
+        </button>
+        <span className="composer-status">{busy ? job!.log.at(-1) ?? "Starting…" : err ? <span className="error">{err}</span> : "Takes about a minute."}</span>
+        <button className="btn btn-grad" disabled={busy || !idea.trim()}><Sparkle />{busy ? "Writing…" : "Make script"}</button>
+      </div>
+      {busy && <div className="meter"><span className="indeterminate" /></div>}
+    </form>
   );
 };

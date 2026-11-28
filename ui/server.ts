@@ -4,6 +4,8 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import { extname, join, normalize, sep } from "node:path";
 import { createServer as createVite } from "vite";
 import { followCta, saveScript } from "../pipeline/1-script/save";
+import { writeReel } from "../pipeline/1-script/write";
+import { basename } from "node:path";
 import { generateVoice, loadVoiceConfig } from "../pipeline/2-voice/run";
 import { listProfiles } from "../pipeline/2-voice/voicebox";
 import { processAudio } from "../pipeline/3-audio/run";
@@ -86,6 +88,14 @@ const api = async (req: IncomingMessage, res: ServerResponse) => {
         saveScript(dir, s);
         return send(res, 200, { ok: true });
       }
+      case "POST /scene": {
+        const { index, narration } = (await body(req)) as { index: number; narration: string };
+        const s = readJson<ScriptFile>(join(dir, "script.json"));
+        if (!s.scenes[index] || index === 0) return send(res, 400, { error: "That scene can't be edited here." });
+        s.scenes[index].narration = narration.trim();
+        saveScript(dir, s); // also rewrites read-aloud.md
+        return send(res, 200, { ok: true });
+      }
       case "POST /freebie": {
         const { yes } = (await body(req)) as { yes: boolean };
         const s = readJson<ScriptFile>(join(dir, "script.json"));
@@ -121,6 +131,11 @@ const api = async (req: IncomingMessage, res: ServerResponse) => {
     return send(res, 404, { error: "Not found" });
   }
   switch (route) {
+    case "POST /api/reels": {
+      const { idea, noFreebie } = (await body(req)) as { idea?: string; noFreebie?: boolean };
+      if (!idea || idea.trim().split(/\s+/).length < 3) return send(res, 400, { error: "Write a full sentence about what the reel should explain." });
+      return send(res, 202, startJob("new", "Writing the script", async () => basename(await writeReel(idea.trim(), !!noFreebie))));
+    }
     case "GET /api/reels":
       return send(res, 200, listReels());
     case "GET /api/job":
