@@ -67,7 +67,7 @@ Each scene is cut from the narration, given a 0.5s breath (none after the hook, 
 
 ### Motion built in code, not templates
 
-Five scene types (**Hook, Stat, Flow, List, CTA**) share one set of named spring presets (*snappy, smooth, punchy*) and one set of color and type tokens.
+Nine scene types (**Hook, Stat, Flow, List, Chat, Myth, Term, Word, CTA**) with 16 layouts between them share one set of named spring presets (*snappy, smooth, punchy*) and one set of color and type tokens. Each reel rotates through the layouts so reels don't share one rhythm.
 
 - **Text** slides up word by word out of a masked edge, never a plain fade.
 - **Numbers** count up with a slight overshoot and settle.
@@ -142,15 +142,15 @@ npm run reel -- voice-add <name> --clone sample.wav [--engine chatterbox_turbo]
 | 2. Voice generation and cloning | ✅ |
 | 3. Cleanup, transcription and scene alignment | ✅ |
 | 4. Timeline | ✅ |
-| 5. Animated scenes: springs, masked text reveals, designed transitions | ✅ first pass |
+| 5. Animated scenes: springs, masked text reveals, designed transitions, 16 layouts | ✅ second pass |
 | 6. Word-highlight captions | ✅ |
 | 7. Render, cover and per-platform captions | ✅ |
 | Freebie: matching PDF, landing page and DM pack, built in the same run | ⏳ |
 | Performance learning from post analytics | ⏳ |
 
-### Coming next: a web UI anyone can run
+### Web UI (Phase 2)
 
-Phase 2 adds `npm run ui`: a browser interface that runs on your own machine. Clone the repo, open the page, and make reels by clicking through it: pick a hook, record in the browser, preview, render, copy the captions. First-run setup checks your tools and asks for your own brand, niche and call to action. Scripts are written with your own Claude Code login or an Anthropic API key. Everything you make stays on your computer.
+`npm run ui` opens a browser studio that runs on your own machine. Type one sentence and it writes the script; pick a hook, record or generate the voice, preview with a scene timeline, render, copy the captions. First-run setup checks your tools and asks for your own brand, niche and call to action. Scripts are written with your own Claude Code login or an Anthropic API key. Everything you make stays on your computer.
 
 ---
 
@@ -165,8 +165,10 @@ pipeline/
   4-timeline/  frame-exact scene lengths and the joined narration track
   7-render/    stills, preview clip, mp4, cover, captions, hook record
   cli.ts       one entry point: npm run reel -- <command>
+  settings.ts  per-user brand, niche, CTA (settings.json, git-ignored)
+ui/            npm run ui: node:http + Vite server, React studio (Home, Script, Voice, Preview, Render, Setup)
 src/
-  scenes/      Hook, Stat, Flow, List, CTA
+  scenes/      9 scene types, 16 layouts, layout picker
   motion/      spring presets, word reveals, sync helpers
   captions/    word-highlight captions
   theme/       color and type tokens, background
